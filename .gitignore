@@ -7,3 +7,4 @@ dist/
 pytestdebug.log
 .coverage
 htmlcov/
+*.pyc
