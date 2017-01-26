@@ -1,26 +1,26 @@
-Python GSA
-==========
+ubuntudesign.gsa: Python GSA client
+===================================
 
-A client library for the [Google Search Appliance](https://enterprise.google.com/search/products/gsa.html), to make retrieving search results in Python easier.
+A client library for the `Google Search Appliance <https://enterprise.google.com/search/products/gsa.html>`_, to make retrieving search results in Python easier.
 
 Installation
-----
+------------
 
-This module is in PyPi as `ubuntudesign.gsa`. You should be able to install it simply with:
+This module is in PyPi as :code:`ubuntudesign.gsa`. You should be able to install it simply with:
 
 .. code:: bash
 
     pip install ubuntudesign.gsa
 
 GSAClient
-----
+---------
 
 This is a basic client for querying a Google Search Appliance.
 
 Making queries
-~~~
+~~~~~~~~~~~~~~
 
-You can query the GSA using the `search` method.
+You can query the GSA using the :code:`search` method.
 
 .. code:: python
 
@@ -34,16 +34,15 @@ You can query the GSA using the `search` method.
       "hello world", start=20, num=20
     )
 
-This will set the [`q`](https://www.google.com/support/enterprise/static/gsa/docs/admin/72/gsa_doc_set/xml_reference/request_format.html#1089652),
-[`start`](https://www.google.com/support/enterprise/static/gsa/docs/admin/72/gsa_doc_set/xml_reference/request_format.html#1076971) (default: 0) and
-[`num`](https://www.google.com/support/enterprise/static/gsa/docs/admin/72/gsa_doc_set/xml_reference/request_format.html#1076882) (default: 10) and
-[`lr`](https://www.google.com/support/enterprise/static/gsa/docs/admin/72/gsa_doc_set/xml_reference/request_format.html#1076879) (default: '') parameters.
-
-No other [search parameters](https://www.google.com/support/enterprise/static/gsa/docs/admin/72/gsa_doc_set/xml_reference/request_format.html#1086546),
+This will set the `q <https://www.google.com/support/enterprise/static/gsa/docs/admin/72/gsa_doc_set/xml_reference/request_format.html#1089652>`_,
+`start <https://www.google.com/support/enterprise/static/gsa/docs/admin/72/gsa_doc_set/xml_reference/request_format.html#1076971>`_ (default: 0) and
+`num <https://www.google.com/support/enterprise/static/gsa/docs/admin/72/gsa_doc_set/xml_reference/request_format.html#1076882>`_ (default: 10) and
+`lr <https://www.google.com/support/enterprise/static/gsa/docs/admin/72/gsa_doc_set/xml_reference/request_format.html#1076879>`_ (default: '') parameters.
+No other `search parameters <https://www.google.com/support/enterprise/static/gsa/docs/admin/72/gsa_doc_set/xml_reference/request_format.html#1086546>`_,
 will be provided, so they will all fall back to their defaults.
 
 The returned results object will attempt to map each of the GSA's
-[standard result XML tags](https://www.google.com/support/enterprise/static/gsa/docs/admin/70/gsa_doc_set/xml_reference/results_format.html#1078461)
+`standard result XML tags <https://www.google.com/support/enterprise/static/gsa/docs/admin/70/gsa_doc_set/xml_reference/results_format.html#1078461>`_
 into a more readable format:
 
 .. code:: python
@@ -55,20 +54,20 @@ into a more readable format:
         'previous_url': str,             # "PU": Ditto for previous set of results
         'items': [
             {
-                'index': int,         # "R[N]": The number of this result in the index of all results
-                'url': str,           # "U": The URL of the resulting page
-                'encoded_url': str,   # "UE": The above URL, encoded
-                'title': str,         # "T": The page title
-                'relevancy': int,     # "RK": How relevant is this result to the query? From 0 to 10
-                'appliance_id': str,  # "ENT_SOURCE": The serial number of the GSA
-                'summary': str,       # "S": Summary text for this result
-                'language': str,      # "LANG": The language of the page
-                'details': {}         # "FS": Name:value pairs of any extra info
+                'index': int,            # "R[N]": The number of this result in the index of all results
+                'url': str,              # "U": The URL of the resulting page
+                'encoded_url': str,      # "UE": The above URL, encoded
+                'title': str,            # "T": The page title
+                'relevancy': int,        # "RK": How relevant is this result to the query? From 0 to 10
+                'appliance_id': str,     # "ENT_SOURCE": The serial number of the GSA
+                'summary': str,          # "S": Summary text for this result
+                'language': str,         # "LANG": The language of the page
+                'details': {}            # "FS": Name:value pairs of any extra info
                 'link_supported': bool,  # "L": “link:” special query term is supported,
-                'cache': {  # "C": List, or "None" if cache information is missing
-                    'size': str,      # "C[SZ]": Human readable size of cached page
-                    'cache_id': str,  # "C[CID]": ID of document in GSA's cache
-                    'encoding': str   # "C[ENC]": The text encoding of the cached page
+                'cache': {               # "C": Dictionary, or "None" if cache is not available
+                    'size': str,         # "C[SZ]": Human readable size of cached page
+                    'cache_id': str,     # "C[CID]": ID of document in GSA's cache
+                    'encoding': str      # "C[ENC]": The text encoding of the cached page
                 }
             },
             ...
@@ -76,10 +75,10 @@ into a more readable format:
     }
 
 Filtering by domain or language
-~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can filter your search results by specifying specific domains or a
-[specific language](https://www.google.com/support/enterprise/static/gsa/docs/admin/72/gsa_doc_set/xml_reference/request_format.html#1077439).
+`specific language <https://www.google.com/support/enterprise/static/gsa/docs/admin/72/gsa_doc_set/xml_reference/request_format.html#1077439>`_.
 
 .. code:: python
 
@@ -91,13 +90,13 @@ You can filter your search results by specifying specific domains or a
     )
 
 Getting accurate totals
-~~~
+~~~~~~~~~~~~~~~~~~~~~~~
 
 At the time of writing, the Google Search Appliance will return an "estimate" of
 the total number of results with each query, but this estimate is usually wildly
 inaccurate, sometimes out by more than a factor of 10!
 
-With the `total_results` method, the client will attempt to request results
+With the :code:`total_results` method, the client will attempt to request results
 990 - 1000. This will usually result in the GSA returning the last page of
 results, which allows us to find the actual total number of results.
 
@@ -106,15 +105,15 @@ results, which allows us to find the actual total number of results.
     total = search_client.total_results("hello world", domains=[], language='')
 
 Django view
-----
+-----------
 
 To simplify usage of the GSA client with Django, a Django view is included
 with this module.
 
 Usage
-~~~
+~~~~~
 
-At the minimum, need to provide the `SEARCH_SERVER_URL` setting to tell the view
+At the minimum, need to provide the :code:`SEARCH_SERVER_URL` setting to tell the view
 where to find the GSA:
 
 .. code:: python
@@ -130,11 +129,11 @@ where to find the GSA:
 
 This view will then be available to be queried:
 
-- `example.com/search?q=my+search+term`
-- `example.com/search?q=my+search+term&domain=example.com&domain=something.example.com`  (overrides `SEARCH_DOMAINS`)
-- `example.com/search?q=my+search+term&language=-lang_zh-CN`  (exclude results in Chinese, overrides `SEARCH_LANGUAGE`)
+- :code:`example.com/search?q=my+search+term`
+- :code:`example.com/search?q=my+search+term&domain=example.com&domain=something.example.com`  (overrides :code:`SEARCH_DOMAINS`)
+- :code:`example.com/search?q=my+search+term&language=-lang_zh-CN`  (exclude results in Chinese, overrides :code:`SEARCH_LANGUAGE`)
 
-After retrieving search results, the view will pass the context object to the specified `template_name` (in this case `search.html`).
+After retrieving search results, the view will pass the context object to the specified :code:`template_name` (in this case :code:`search.html`).
 
 The context object will be structured as follows:
 
