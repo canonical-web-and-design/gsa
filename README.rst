@@ -93,6 +93,8 @@ You can filter your search results by specifying specific domains or a
         domains=["site1.example.com", "site2.example.com"]
     )
 
+*NB:* If no search results are found with the ``language`` filter applied, the GSA will fall back to returning any results it finds without filtering.
+
 Getting accurate totals
 ~~~~~~~~~~~~~~~~~~~~~~~
 
