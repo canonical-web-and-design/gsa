@@ -56,11 +56,18 @@ class SearchView(TemplateView):
         """
 
         search_server_url = settings.SEARCH_SERVER_URL
-        domains = getattr(settings, "SEARCH_DOMAINS", [])
         search_host = urlparse(search_server_url).netloc
         search_client = GSAClient(search_server_url)
 
         query = self.request.GET.get('q', '').encode('utf-8')
+        domains = (
+            self.request.GET.getlist('domain') or
+            getattr(settings, "SEARCH_DOMAINS", [])
+        )
+        language = (
+            self.request.GET.get('language') or
+            getattr(settings, "SEARCH_LANGUAGE", '')
+        )
         limit = int(self.request.GET.get('limit', '10'))
         offset = int(self.request.GET.get('offset', '0'))
         results = {}
@@ -75,11 +82,16 @@ class SearchView(TemplateView):
                 socket.gethostbyname(search_host)
 
             server_results = search_client.search(
-                query, start=offset, num=limit, domains=domains
+                query,
+                start=offset, num=limit, domains=domains, language=language
             )
             items = server_results['items']
 
-            total = search_client.total_results(query, domains=domains)
+            total = search_client.total_results(
+                query,
+                domains=domains,
+                language=language
+            )
 
             results = {
                 'items': items,

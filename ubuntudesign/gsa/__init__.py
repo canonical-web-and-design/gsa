@@ -29,7 +29,7 @@ class GSAClient:
     def __init__(self, base_url):
         self.base_url = base_url
 
-    def total_results(self, query, domains=[]):
+    def total_results(self, query, domains=[], language=""):
         """
         Inexplicably, the GSA returns a completely incorrect total
         This is a hack to get the correct total.
@@ -41,7 +41,10 @@ class GSAClient:
         Therefore this is the way to get the real total
         """
 
-        results = self.search(query, start=990, num=10, domains=domains)
+        results = self.search(
+            query,
+            start=990, num=10, domains=domains, language=language
+        )
 
         total = 0
 
@@ -50,7 +53,7 @@ class GSAClient:
 
         return int(total)
 
-    def search(self, query, start=0, num=10, domains=[]):
+    def search(self, query, start=0, num=10, domains=[], language=""):
         """
         Query the GSA to get response in XML format
         which it will then parse into a dictionary.
@@ -64,7 +67,8 @@ class GSAClient:
         query_parameters = urlencode({
             'q': query,
             'num': str(num),
-            'start': str(start)
+            'start': str(start),
+            'lr': language
         })
         search_url = self.base_url + '?' + query_parameters
 
