@@ -55,6 +55,7 @@ class SearchView(TemplateView):
         """
 
         search_server_url = settings.SEARCH_SERVER_URL
+        domains = getattr(settings, "SEARCH_DOMAINS", [])
         search_host = urlparse(search_server_url).netloc
         search_client = GSAClient(search_server_url)
 
@@ -73,11 +74,11 @@ class SearchView(TemplateView):
                 socket.gethostbyname(search_host)
 
             server_results = search_client.search(
-                query, start=offset, num=limit
+                query, start=offset, num=limit, domains=domains
             )
             items = server_results['items']
 
-            total = search_client.total_results(query)
+            total = search_client.total_results(query, domains=domains)
             start = None
             end = None
 
