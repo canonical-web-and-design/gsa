@@ -10,6 +10,7 @@ setup(
     author_email='robin+pypi@canonical.com',
     url='https://github.com/ubuntudesign/python-gsa',
     packages=[
+        'ubuntudesign',
         'ubuntudesign.gsa',
     ],
     description=(
