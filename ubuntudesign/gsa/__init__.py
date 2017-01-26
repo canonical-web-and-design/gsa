@@ -41,7 +41,7 @@ class GSAClient:
         Therefore this is the way to get the real total
         """
 
-        results = self.results(query, start=990, num=10, domains=domains)
+        results = self.search(query, start=990, num=10, domains=domains)
 
         total = 0
 

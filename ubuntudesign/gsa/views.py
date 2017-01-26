@@ -56,7 +56,7 @@ class SearchView(TemplateView):
 
         search_server_url = settings.SEARCH_SERVER_URL
         search_host = urlparse(search_server_url).netloc
-        parser = GSAClient(search_server_url)
+        search_client = GSAClient(search_server_url)
 
         query = self.request.GET.get('q', '').encode('utf-8')
         limit = int(self.request.GET.get('limit', '10'))
@@ -72,10 +72,12 @@ class SearchView(TemplateView):
             else:
                 socket.gethostbyname(search_host)
 
-            server_results = parser.results(query, start=offset, num=limit)
+            server_results = search_client.search(
+                query, start=offset, num=limit
+            )
             items = server_results['items']
 
-            total = parser.total_results(query)
+            total = search_client.total_results(query)
             start = None
             end = None
 
