@@ -1,6 +1,10 @@
 ubuntudesign.gsa: Python GSA client
 ===================================
 
+.. image:: https://travis-ci.org/ubuntudesign/ubuntudesign.gsa.svg?branch=master
+   :alt: build status
+   :target: https://travis-ci.org/ubuntudesign/ubuntudesign.gsa
+
 A client library for the `Google Search Appliance <https://enterprise.google.com/search/products/gsa.html>`_, to make retrieving search results in Python easier.
 
 Installation
