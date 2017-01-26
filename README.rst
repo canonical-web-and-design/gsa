@@ -100,7 +100,9 @@ Getting accurate totals
 
 At the time of writing, the Google Search Appliance will return an "estimate" of
 the total number of results with each query, but this estimate is usually wildly
-inaccurate, sometimes out by more than a factor of 10!
+inaccurate, sometimes out by more than a factor of 10! This is true even with
+`rc <https://www.google.com/support/enterprise/static/gsa/docs/admin/72/gsa_doc_set/xml_reference/request_format.html#1076946>`
+enabled.
 
 With the :code:`total_results` method, the client will attempt to request results
 990 - 1000. This will usually result in the GSA returning the last page of
