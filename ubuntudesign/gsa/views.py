@@ -1,4 +1,5 @@
 # Core modules
+import math
 try:
     from urllib.parse import urlparse
     from urllib.error import URLError
@@ -6,7 +7,7 @@ except:
     from urlparse import urlparse
     from urllib2 import URLError
 import socket
-from requests import ConnectionError
+import requests
 
 # Third party modules
 from django.conf import settings
@@ -55,11 +56,18 @@ class SearchView(TemplateView):
         """
 
         search_server_url = settings.SEARCH_SERVER_URL
-        domains = getattr(settings, "SEARCH_DOMAINS", [])
         search_host = urlparse(search_server_url).netloc
         search_client = GSAClient(search_server_url)
 
         query = self.request.GET.get('q', '').encode('utf-8')
+        domains = (
+            self.request.GET.getlist('domain') or
+            getattr(settings, "SEARCH_DOMAINS", [])
+        )
+        language = (
+            self.request.GET.get('language') or
+            getattr(settings, "SEARCH_LANGUAGE", '')
+        )
         limit = int(self.request.GET.get('limit', '10'))
         offset = int(self.request.GET.get('offset', '0'))
         results = {}
@@ -74,19 +82,16 @@ class SearchView(TemplateView):
                 socket.gethostbyname(search_host)
 
             server_results = search_client.search(
-                query, start=offset, num=limit, domains=domains
+                query,
+                start=offset, num=limit, domains=domains, language=language
             )
             items = server_results['items']
 
-            total = search_client.total_results(query, domains=domains)
-            start = None
-            end = None
-
-            remainder = total % limit
-            if remainder == 0:
-                last_page_offset = total - offset
-            else:
-                last_page_offset = total - remainder
+            total = search_client.total_results(
+                query,
+                domains=domains,
+                language=language
+            )
 
             results = {
                 'items': items,
@@ -96,25 +101,36 @@ class SearchView(TemplateView):
             if total > 0:
                 start = items[0]['index']
                 end = items[-1]['index']
+                last_page = int(math.ceil(float(total) / limit))
+                penultimate_page = last_page - 1
+                current_page = int(math.ceil(float(end) / limit))
+                last_page_offset = limit * penultimate_page
+                next_offset = offset + limit
+                previous_offset = offset - limit
+                if next_offset >= total:
+                    next_offset = None
+                if previous_offset < 0:
+                    previous_offset = None
 
                 results.update({
                     'start': start,
                     'end': end,
-                    'next_offset': offset + limit,
-                    'previous_offset': offset - limit,
+                    'next_offset': next_offset,
+                    'previous_offset': previous_offset,
                     'last_page_offset': last_page_offset,
-                    'last_page': start > last_page_offset,
-                    'penultimate_page': (
-                        start < last_page_offset and
-                        start >= last_page_offset - limit
-                    ),
-                    'first_page': start == 1,
-                    'second_page': start > 1 and start <= (limit + 1)
+                    'last_page': last_page,
+                    'penultimate_page': penultimate_page,
+                    'current_page': current_page
                 })
+
+                if offset + limit < total:
+                    results['next_offset'] = offset + limit
+                if offset - limit >= 0:
+                    results['previous_offset'] = offset - limit
 
         except URLError:
             error = 'request error'
-        except ConnectionError:
+        except requests.ConnectionError:
             error = 'connection error'
         except socket.error:
             error = 'host error'
