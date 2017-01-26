@@ -13,7 +13,7 @@ Usage
     total = search_client.total_results("hello world")
 
 Django view
----
+----
 
 There is also a view for using this with Django:
 
