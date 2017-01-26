@@ -93,32 +93,28 @@ class GSAClient:
                 'url': xml_text(item_element, 'U'),
                 'encoded_url': xml_text(item_element, 'UE'),
                 'title': xml_text(item_element, 'T'),
-                'relevancy': xml_text(item_element, 'RK'),
+                'relevancy': int(xml_text(item_element, 'RK')),
                 'appliance_id': xml_text(item_element, 'ENT_SOURCE'),
                 'summary': xml_text(item_element, 'S'),
                 'language': xml_text(item_element, 'LANG'),
-                'details': [],
-                'features': {}
+                'details': {},
+                'link_supported': bool(item_element.xpath('HAS/L')),
+                'cache': None
             }
 
             detail_elements = item_element.xpath('FS')
 
             for detail in detail_elements:
-                item['details'].append({
-                    detail.attrib['NAME']: detail.attrib['VALUE']
-                })
+                item['details'][detail.attrib['NAME']] = detail.attrib['VALUE']
 
-            features_elements = item_element.xpath('HAS/*')
+            cache_elements = item_element.xpath('HAS/C')
 
-            for feature in features_elements:
-                if feature.tag == 'L':
-                    item['features']['link_supported'] = True
-                if feature.tag == 'C':
-                    item['features']['cache'] = {
-                        'size': feature.attrib.get('SZ'),
-                        'cache_id': feature.attrib.get('CID'),
-                        'encoding': feature.attrib.get('ENC')
-                    }
+            if cache_elements:
+                item['cache'] = {
+                    'size': cache_elements[0].attrib.get('SZ'),
+                    'cache_id': cache_elements[0].attrib.get('CID'),
+                    'encoding': cache_elements[0].attrib.get('ENC')
+                }
 
             results['items'].append(item)
 
