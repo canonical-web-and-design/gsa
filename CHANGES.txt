@@ -1,4 +1,6 @@
-v0.1.0, 2017-01-26 -- Initial release
-v0.1.1, 2017-01-26 -- Support filtering by domain in GSAClient
-v1.0.0, 2017-01-27 -- Support filtering by language; restructure data objects
+v0.1.0, 2017-01-25 -- Initial release
+v0.1.1, 2017-01-25 -- Support filtering by domain in GSAClient
+v1.0.0, 2017-01-26 -- Support filtering by language; restructure data objects
+v1.0.1, 2017-01-27 -- Fix domain filtering
+v1.0.2, 2017-01-27 -- Be more permissive with dependency versioning
 

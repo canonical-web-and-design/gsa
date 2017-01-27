@@ -61,7 +61,8 @@ class GSAClient:
 
         # Filter by domains, if specified
         if domains:
-            query += ' (' + " | ".join(domains) + ')'
+            domain_filters = ['site:' + domain for domain in domains]
+            query += ' ( ' + " | ".join(domain_filters) + ' )'
 
         # Build the GSA URL
         query_parameters = urlencode({

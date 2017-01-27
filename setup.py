@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='ubuntudesign.gsa',
-    version='1.0.0',
+    version='1.0.2',
     author='Canonical webteam',
     author_email='robin+pypi@canonical.com',
     url='https://github.com/ubuntudesign/python-gsa',
@@ -18,7 +18,8 @@ setup(
     ),
     long_description=open('README.rst').read(),
     install_requires=[
-        "requests==2.10.0",
-        "lxml==3.7.2"
+        "requests>=2.10.0",
+        "lxml>=3.3.0"
     ],
 )
+
