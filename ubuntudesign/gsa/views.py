@@ -56,6 +56,10 @@ class SearchView(TemplateView):
             self.request.GET.get('language') or
             getattr(settings, "SEARCH_LANGUAGE", '')
         )
+        timeout = (
+            self.request.GET.get('language') or
+            getattr(settings, "SEARCH_TIMEOUT", 30)
+        )
         limit = int(self.request.GET.get('limit', '10'))
         offset = int(self.request.GET.get('offset', '0'))
         results = {}
@@ -68,7 +72,8 @@ class SearchView(TemplateView):
                     start=offset,
                     num=limit,
                     domains=domains,
-                    language=language
+                    language=language,
+                    timeout=timeout
                 )
                 items = server_results['items']
 
@@ -114,9 +119,13 @@ class SearchView(TemplateView):
                         results['previous_offset'] = offset - limit
 
             except URLError:
-                error = 'request error'
+                error = 'URL error'
             except requests.ConnectionError:
                 error = 'connection error'
+            except requests.Timeout:
+                error = 'timeout error'
+            except requests.RequestException:
+                error = 'general request error'
 
         # Import context from parent
         template_context = super(SearchView, self).get_context_data(**kwargs)
