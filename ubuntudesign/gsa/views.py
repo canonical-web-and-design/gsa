@@ -1,12 +1,9 @@
 # Core modules
 import math
 try:
-    from urllib.parse import urlparse
     from urllib.error import URLError
 except:
-    from urlparse import urlparse
     from urllib2 import URLError
-import socket
 import requests
 
 # Third party modules
@@ -15,14 +12,6 @@ from django.views.generic import TemplateView
 
 # Local modules
 from . import GSAClient
-
-
-def is_ipv4(address):
-    try:
-        socket.inet_aton(address)
-        return True
-    except socket.error:
-        return False
 
 
 class SearchView(TemplateView):
@@ -56,7 +45,6 @@ class SearchView(TemplateView):
         """
 
         search_server_url = settings.SEARCH_SERVER_URL
-        search_host = urlparse(search_server_url).netloc
         search_client = GSAClient(search_server_url)
 
         query = self.request.GET.get('q', '').encode('utf-8')
@@ -75,12 +63,6 @@ class SearchView(TemplateView):
 
         if query:
             try:
-                # Check we can find the host
-                if is_ipv4(search_host):
-                    socket.gethostbyaddr(search_host)
-                else:
-                    socket.gethostbyname(search_host)
-
                 server_results = search_client.search(
                     query,
                     start=offset,
@@ -135,8 +117,6 @@ class SearchView(TemplateView):
                 error = 'request error'
             except requests.ConnectionError:
                 error = 'connection error'
-            except socket.error:
-                error = 'host error'
 
         # Import context from parent
         template_context = super(SearchView, self).get_context_data(**kwargs)
