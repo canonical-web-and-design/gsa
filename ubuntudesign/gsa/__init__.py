@@ -53,7 +53,10 @@ class GSAClient:
 
         return int(total)
 
-    def search(self, query, start=0, num=10, domains=[], language=""):
+    def search(
+        self, query,
+        start=0, num=10, domains=[], language="", timeout=30
+    ):
         """
         Query the GSA to get response in XML format
         which it will then parse into a dictionary.
@@ -73,7 +76,7 @@ class GSAClient:
         })
         search_url = self.base_url + '?' + query_parameters
 
-        response = requests.get(search_url)
+        response = requests.get(search_url, timeout=timeout)
 
         xml_tree = etree.fromstring(response.content)
 
