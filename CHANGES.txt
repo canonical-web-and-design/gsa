@@ -3,4 +3,6 @@ v0.1.1, 2017-01-25 -- Support filtering by domain in GSAClient
 v1.0.0, 2017-01-26 -- Support filtering by language; restructure data objects
 v1.0.1, 2017-01-27 -- Fix domain filtering
 v1.0.2, 2017-01-27 -- Be more permissive with dependency versioning
+v1.0.3, 2017-01-31 -- Timouts for communicating with search server
+v1.0.4, 2017-01-31 -- Catch timeout errors properly in the view
 

@@ -1,12 +1,9 @@
 # Core modules
 import math
 try:
-    from urllib.parse import urlparse
     from urllib.error import URLError
 except:
-    from urlparse import urlparse
     from urllib2 import URLError
-import socket
 import requests
 
 # Third party modules
@@ -15,14 +12,6 @@ from django.views.generic import TemplateView
 
 # Local modules
 from . import GSAClient
-
-
-def is_ipv4(address):
-    try:
-        socket.inet_aton(address)
-        return True
-    except socket.error:
-        return False
 
 
 class SearchView(TemplateView):
@@ -56,7 +45,6 @@ class SearchView(TemplateView):
         """
 
         search_server_url = settings.SEARCH_SERVER_URL
-        search_host = urlparse(search_server_url).netloc
         search_client = GSAClient(search_server_url)
 
         query = self.request.GET.get('q', '').encode('utf-8')
@@ -68,72 +56,76 @@ class SearchView(TemplateView):
             self.request.GET.get('language') or
             getattr(settings, "SEARCH_LANGUAGE", '')
         )
+        timeout = (
+            self.request.GET.get('language') or
+            getattr(settings, "SEARCH_TIMEOUT", 30)
+        )
         limit = int(self.request.GET.get('limit', '10'))
         offset = int(self.request.GET.get('offset', '0'))
         results = {}
         error = None
 
-        # return self.context
-        try:
-            # Check we can find the host
-            if is_ipv4(search_host):
-                socket.gethostbyaddr(search_host)
-            else:
-                socket.gethostbyname(search_host)
+        if query:
+            try:
+                server_results = search_client.search(
+                    query,
+                    start=offset,
+                    num=limit,
+                    domains=domains,
+                    language=language,
+                    timeout=timeout
+                )
+                items = server_results['items']
 
-            server_results = search_client.search(
-                query,
-                start=offset, num=limit, domains=domains, language=language
-            )
-            items = server_results['items']
+                total = search_client.total_results(
+                    query,
+                    domains=domains,
+                    language=language
+                )
 
-            total = search_client.total_results(
-                query,
-                domains=domains,
-                language=language
-            )
+                results = {
+                    'items': items,
+                    'total': total,
+                }
 
-            results = {
-                'items': items,
-                'total': total,
-            }
+                if total > 0:
+                    start = items[0]['index']
+                    end = items[-1]['index']
+                    last_page = int(math.ceil(float(total) / limit))
+                    penultimate_page = last_page - 1
+                    current_page = int(math.ceil(float(end) / limit))
+                    last_page_offset = limit * penultimate_page
+                    next_offset = offset + limit
+                    previous_offset = offset - limit
+                    if next_offset >= total:
+                        next_offset = None
+                    if previous_offset < 0:
+                        previous_offset = None
 
-            if total > 0:
-                start = items[0]['index']
-                end = items[-1]['index']
-                last_page = int(math.ceil(float(total) / limit))
-                penultimate_page = last_page - 1
-                current_page = int(math.ceil(float(end) / limit))
-                last_page_offset = limit * penultimate_page
-                next_offset = offset + limit
-                previous_offset = offset - limit
-                if next_offset >= total:
-                    next_offset = None
-                if previous_offset < 0:
-                    previous_offset = None
+                    results.update({
+                        'start': start,
+                        'end': end,
+                        'next_offset': next_offset,
+                        'previous_offset': previous_offset,
+                        'last_page_offset': last_page_offset,
+                        'last_page': last_page,
+                        'penultimate_page': penultimate_page,
+                        'current_page': current_page
+                    })
 
-                results.update({
-                    'start': start,
-                    'end': end,
-                    'next_offset': next_offset,
-                    'previous_offset': previous_offset,
-                    'last_page_offset': last_page_offset,
-                    'last_page': last_page,
-                    'penultimate_page': penultimate_page,
-                    'current_page': current_page
-                })
+                    if offset + limit < total:
+                        results['next_offset'] = offset + limit
+                    if offset - limit >= 0:
+                        results['previous_offset'] = offset - limit
 
-                if offset + limit < total:
-                    results['next_offset'] = offset + limit
-                if offset - limit >= 0:
-                    results['previous_offset'] = offset - limit
-
-        except URLError:
-            error = 'request error'
-        except requests.ConnectionError:
-            error = 'connection error'
-        except socket.error:
-            error = 'host error'
+            except URLError:
+                error = 'URL error'
+            except requests.ConnectionError:
+                error = 'connection error'
+            except requests.Timeout:
+                error = 'timeout error'
+            except requests.RequestException:
+                error = 'general request error'
 
         # Import context from parent
         template_context = super(SearchView, self).get_context_data(**kwargs)
