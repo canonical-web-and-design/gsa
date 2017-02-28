@@ -134,6 +134,7 @@ class SearchView(TemplateView):
         template_context['query'] = query
         template_context['limit'] = limit
         template_context['offset'] = offset
+        template_context['domains'] = domains
         template_context['error'] = error
 
         return template_context
