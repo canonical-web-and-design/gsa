@@ -77,11 +77,7 @@ class SearchView(TemplateView):
                 )
                 items = server_results['items']
 
-                total = search_client.total_results(
-                    query,
-                    domains=domains,
-                    language=language
-                )
+                total = server_results['estimated_total_results']
 
                 results = {
                     'items': items,
