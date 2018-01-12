@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='ubuntudesign.gsa',
-    version='1.1.0',
+    version='1.2.0',
     author='Canonical webteam',
     author_email='robin+pypi@canonical.com',
     url='https://github.com/ubuntudesign/python-gsa',

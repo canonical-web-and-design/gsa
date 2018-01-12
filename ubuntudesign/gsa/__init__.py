@@ -29,30 +29,6 @@ class GSAClient:
     def __init__(self, base_url):
         self.base_url = base_url
 
-    def total_results(self, query, domains=[], language=""):
-        """
-        Inexplicably, the GSA returns a completely incorrect total
-        This is a hack to get the correct total.
-
-        If you request with start>1000, the GSA returns nothing.
-        But if you request with start = 990, it returns the last page
-        even if there are only 10 results.
-
-        Therefore this is the way to get the real total
-        """
-
-        results = self.search(
-            query,
-            start=990, num=10, domains=domains, language=language
-        )
-
-        total = 0
-
-        if results['items']:
-            total = results['items'][-1]['index']
-
-        return int(total)
-
     def search(
         self, query,
         start=0, num=10, domains=[], language="", timeout=30
@@ -62,12 +38,11 @@ class GSAClient:
         which it will then parse into a dictionary.
         """
 
+        query_string = query.decode()
+
         # Filter by domains, if specified
         if domains:
             domain_filters = ['site:' + domain for domain in domains]
-
-            query_string = query.decode()
-
             query_string += ' ( ' + " | ".join(domain_filters) + ' )'
 
         # Build the GSA URL
