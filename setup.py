@@ -1,18 +1,15 @@
 #! /usr/bin/env python3
 
 # Core
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
-    name='ubuntudesign.gsa',
-    version='1.2.0',
+    name='canonicalwebteam.gsa',
+    version='2.0.0',
     author='Canonical webteam',
     author_email='robin+pypi@canonical.com',
-    url='https://github.com/ubuntudesign/python-gsa',
-    packages=[
-        'ubuntudesign',
-        'ubuntudesign.gsa',
-    ],
+    url='https://github.com/canonicalwebteam/gsa',
+    packages=find_packages(),
     description=(
         'A client for communicating with the Google Search Appliance.'
     ),
