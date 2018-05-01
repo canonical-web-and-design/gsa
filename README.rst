@@ -1,20 +1,20 @@
-ubuntudesign.gsa: Python GSA client
+canonicalwebteam.gsa: Python GSA client
 ===================================
 
-.. image:: https://travis-ci.org/ubuntudesign/ubuntudesign.gsa.svg?branch=master
+.. image:: https://travis-ci.org/canonicalwebteam/gsa.svg?branch=master
    :alt: build status
-   :target: https://travis-ci.org/ubuntudesign/ubuntudesign.gsa
+   :target: https://travis-ci.org/canonicalweeam/gsa
 
 A client library for the `Google Search Appliance <https://enterprise.google.com/search/products/gsa.html>`_, to make retrieving search results in Python easier.
 
 Installation
 ------------
 
-This module is in PyPi as :code:`ubuntudesign.gsa`. You should be able to install it simply with:
+This module is in PyPi as :code:`canonicalwebteam.gsa`. You should be able to install it simply with:
 
 .. code:: bash
 
-    pip install ubuntudesign.gsa
+    pip install canonicalwebteam.gsa
 
 GSAClient
 ---------
@@ -132,7 +132,7 @@ where to find the GSA:
     SEARCH_LANGUAGE = 'lang_zh-CN'                       # Optional: By default, limit results to this language
 
     # urls.py
-    from ubuntudesign.gsa.views import SearchView
+    from canonicalwebteam.gsa.views import SearchView
     urlpatterns += [url(r'^search/?$', SearchView.as_view(template_name="search.html"))]
 
 This view will then be available to be queried:
