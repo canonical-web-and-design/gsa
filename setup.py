@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='canonicalwebteam.gsa',
-    version='2.0.0',
+    version='2.0.1',
     author='Canonical webteam',
     author_email='robin+pypi@canonical.com',
     url='https://github.com/canonicalwebteam/gsa',

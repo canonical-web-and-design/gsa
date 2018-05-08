@@ -9,3 +9,4 @@ v1.0.5, 2017-02-21 -- Pass the "domains" info through to the template
 v1.1.0, 2017-05-22 -- Python3 compatibility
 v1.2.0, 2018-01-10 -- Use GSA estimated total for amount of results.
 v2.0.0, 2018-04-20 -- Rename to canonicalwebteam.gsa
+v2.0.1, 2018-05-08 -- Hotfix: Total results parse error
