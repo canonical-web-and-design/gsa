@@ -77,7 +77,7 @@ class SearchView(TemplateView):
                 )
                 items = server_results['items']
 
-                total = server_results['estimated_total_results']
+                total = int(server_results['estimated_total_results'])
 
                 results = {
                     'items': items,
