@@ -1,6 +1,13 @@
 canonicalwebteam.gsa: Python GSA client
 ===================================
 
+Archived
+--------
+
+The Google Search Appliance `is EOLed <https://support.google.com/gsa/answer/7528111?hl=en>`_, and so we are migrating all sites to use `the Google Custom Search API <https://developers.google.com/custom-search/json-api/v1/overview>`_. Therefore this module will no longer be maintained, and its use is not recommended.
+
+----
+
 .. image:: https://travis-ci.org/canonicalwebteam/gsa.svg?branch=master
    :alt: build status
    :target: https://travis-ci.org/canonicalweeam/gsa
